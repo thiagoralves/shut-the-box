@@ -106,7 +106,10 @@ shut-the-box/
 │   └── signup.html      # Sign up page
 ├── .env.example         # Environment variables template
 ├── requirements.txt     # Python dependencies
-├── run.py              # Application entry point
+├── run.py              # Development entry point
+├── wsgi.py             # Production WSGI entry point
+├── install.sh          # Installation script
+├── run_app.sh          # Production startup script
 └── README.md           # This file
 ```
 
@@ -135,16 +138,16 @@ The app will run with debug mode enabled and auto-reload on code changes.
 
 ### Production Deployment
 
-For production, use the provided `run_app.sh` script which uses uvicorn:
+For production, use the provided `run_app.sh` script which uses gunicorn:
 
 ```bash
 ./run_app.sh
 ```
 
-Or use Gunicorn directly:
+Or use gunicorn directly:
 
 ```bash
-gunicorn -w 4 -b 0.0.0.0:8000 "app:create_app()"
+gunicorn -w 4 -b 0.0.0.0:8000 wsgi:app
 ```
 
 Make sure to:
@@ -170,10 +173,10 @@ To run the application as a background service that starts automatically on boot
    [Service]
    User=ubuntu
    WorkingDirectory=/home/ubuntu/shut-the-box
-   ExecStart=/home/ubuntu/shut-the-box/venv/bin/uvicorn app:create_app --host 127.0.0.1 --port 8001
+   ExecStart=/home/ubuntu/shut-the-box/venv/bin/gunicorn -w 4 -b 127.0.0.1:8001 wsgi:app
    Restart=always
    RestartSec=3
-   Environment=PATH=/home/ubuntu/shut-the-box/venv/bin
+   EnvironmentFile=/home/ubuntu/shut-the-box/.env
 
    [Install]
    WantedBy=multi-user.target

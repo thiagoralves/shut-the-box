@@ -19,5 +19,5 @@ if [ -f ".env" ]; then
     export $(grep -v '^#' .env | xargs)
 fi
 
-# Run the Flask application with uvicorn
-uvicorn "app:create_app()" --host 0.0.0.0 --port 8000
+# Run the Flask application with gunicorn
+gunicorn -w 4 -b 0.0.0.0:8000 wsgi:app
