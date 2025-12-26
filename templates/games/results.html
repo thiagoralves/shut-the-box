@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Game Results - {{ game.name }} - Shut the Box{% endblock %}
+
+{% block content %}
+<div class="main-container">
+    <header class="app-header">
+        <div class="header-brand">
+            <div class="header-logo">
+                <div class="dice-icon-small">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+            </div>
+            <h1>Shut the Box</h1>
+        </div>
+        <div class="header-menu">
+            <button class="hamburger-btn" onclick="toggleMenu()" aria-label="Menu">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+            <div class="dropdown-menu" id="headerMenu">
+                <a href="{{ url_for('auth.profile') }}" class="dropdown-item">{{ current_user.username }}</a>
+                <a href="{{ url_for('auth.logout') }}" class="dropdown-item">Logout</a>
+            </div>
+        </div>
+    </header>
+    
+    <main class="main-content">
+        <div class="results-section">
+            <div class="results-header">
+                <h2>Game Over!</h2>
+                <p class="game-name">{{ game.name }}</p>
+            </div>
+            
+            <div class="winner-announcement">
+                <div class="trophy-icon">&#127942;</div>
+                <h3>Winner</h3>
+                <div class="winner-name">{{ game.winner.username }}</div>
+                <div class="winner-score">{{ players[0].score }} points</div>
+            </div>
+            
+            <div class="final-standings">
+                <h3>Final Standings</h3>
+                <div class="standings-list">
+                    {% for player in players %}
+                    <div class="standing-item {% if loop.index == 1 %}first-place{% endif %} {% if player.user_id == current_user.id %}current-player{% endif %}">
+                        <span class="standing-rank">{{ loop.index }}</span>
+                        <div class="standing-player">
+                            <div class="player-avatar-small">{{ player.user.username[0].upper() }}</div>
+                            <span class="player-name">{{ player.user.username }}</span>
+                        </div>
+                        <span class="standing-score">{{ player.score }} pts</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="game-stats">
+                <p>Rounds played: {{ game.current_round }}</p>
+            </div>
+            
+            <div class="results-actions">
+                <a href="{{ url_for('games.create_game') }}" class="btn btn-primary">New Game</a>
+                <a href="{{ url_for('games.list_games') }}" class="btn btn-secondary">Back to Games</a>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}
