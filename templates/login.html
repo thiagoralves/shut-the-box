@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Shut the Box{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="logo">
+                <div class="dice-icon">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+            </div>
+            <h1>Shut the Box</h1>
+            <p class="subtitle">Welcome back!</p>
+        </div>
+        
+        <form method="POST" class="auth-form">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required 
+                       autocomplete="username" autocapitalize="none"
+                       placeholder="Enter your username">
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required
+                       autocomplete="current-password"
+                       placeholder="Enter your password">
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Log In</button>
+        </form>
+        
+        <div class="auth-footer">
+            <p>Don't have an account?</p>
+            <a href="{{ url_for('auth.signup') }}" class="btn btn-secondary">Sign Up</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
