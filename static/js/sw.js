@@ -1,6 +1,5 @@
-const CACHE_NAME = 'shut-the-box-v1';
+const CACHE_NAME = 'shut-the-box-v2';
 const urlsToCache = [
-    '/',
     '/static/css/style.css',
     '/static/manifest.json',
     '/static/icons/icon-192.png',
@@ -26,6 +25,11 @@ self.addEventListener('fetch', function(event) {
         return;
     }
     
+    if (event.request.mode === 'navigate') {
+        event.respondWith(fetch(event.request));
+        return;
+    }
+    
     event.respondWith(
         fetch(event.request)
             .then(function(response) {
@@ -33,12 +37,14 @@ self.addEventListener('fetch', function(event) {
                     return response;
                 }
                 
-                const responseToCache = response.clone();
-                
-                caches.open(CACHE_NAME)
-                    .then(function(cache) {
-                        cache.put(event.request, responseToCache);
-                    });
+                var url = new URL(event.request.url);
+                if (url.pathname.startsWith('/static/')) {
+                    var responseToCache = response.clone();
+                    caches.open(CACHE_NAME)
+                        .then(function(cache) {
+                            cache.put(event.request, responseToCache);
+                        });
+                }
                 
                 return response;
             })
