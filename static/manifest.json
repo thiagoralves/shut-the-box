@@ -3,6 +3,7 @@
     "short_name": "Shut the Box",
     "description": "A classic dice game for family and friends",
     "start_url": "/",
+    "scope": "/",
     "display": "standalone",
     "background_color": "#f8fafc",
     "theme_color": "#2563eb",
