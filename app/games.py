@@ -241,7 +241,8 @@ def roll_dice(game_id):
     game.round_phase = 'flipping'
     
     for player in game.players:
-        player.has_submitted = False
+        if not player.is_out:
+            player.has_submitted = False
     
     db.session.commit()
     flash(f'Rolled {game.dice1} + {game.dice2} = {game.get_dice_total()}!', 'info')
@@ -332,7 +333,7 @@ def pass_turn(game_id):
 def check_turn_end(game):
     players = GamePlayer.query.filter_by(game_id=game.game_id if hasattr(game, 'game_id') else game.id).all()
     
-    all_submitted = all(p.has_submitted for p in players)
+    all_submitted = all(p.has_submitted or p.is_out for p in players)
     all_out = all(p.is_out for p in players)
     any_shut_box = any(not p.get_tiles_list() for p in players)
     
@@ -341,7 +342,8 @@ def check_turn_end(game):
     elif all_submitted:
         game.round_phase = 'rolling'
         for player in players:
-            player.has_submitted = False
+            if not player.is_out:
+                player.has_submitted = False
         db.session.commit()
 
 
