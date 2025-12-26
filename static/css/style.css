@@ -244,6 +244,16 @@ body {
     background: var(--border-color);
 }
 
+.btn-danger {
+    background: #dc2626;
+    color: white;
+    border: none;
+}
+
+.btn-danger:hover {
+    background: #b91c1c;
+}
+
 .btn-outline {
     background: transparent;
     color: var(--primary-color);

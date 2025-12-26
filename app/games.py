@@ -436,3 +436,20 @@ def game_state(game_id):
         'round': game.current_round,
         'all_submitted': all_submitted
     })
+
+
+@games_bp.route('/games/<int:game_id>/end', methods=['POST'])
+@login_required
+def end_game_early(game_id):
+    game = Game.query.get_or_404(game_id)
+    
+    if game.created_by != current_user.id:
+        flash('Only the host can end the game.', 'error')
+        return redirect(url_for('games.play_game', game_id=game_id))
+    
+    GamePlayer.query.filter_by(game_id=game_id).delete()
+    db.session.delete(game)
+    db.session.commit()
+    
+    flash('Game has been ended and deleted.', 'info')
+    return redirect(url_for('games.list_games'))
