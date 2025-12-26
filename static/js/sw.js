@@ -1,4 +1,4 @@
-const CACHE_NAME = 'shut-the-box-v3';
+const CACHE_NAME = 'shut-the-box-v4';
 const urlsToCache = [
     '/static/css/style.css',
     '/static/manifest.json',
