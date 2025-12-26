@@ -78,8 +78,15 @@ def create_game():
 @login_required
 def view_game(game_id):
     game = Game.query.get_or_404(game_id)
-    players = GamePlayer.query.filter_by(game_id=game_id).all()
     current_player = GamePlayer.query.filter_by(game_id=game_id, user_id=current_user.id).first()
+    
+    if game.status == 'playing' and current_player:
+        return redirect(url_for('games.play_game', game_id=game_id))
+    
+    if game.status == 'finished':
+        return redirect(url_for('games.game_results', game_id=game_id))
+    
+    players = GamePlayer.query.filter_by(game_id=game_id).all()
     is_creator = game.created_by == current_user.id
     return render_template('games/view.html', game=game, players=players, 
                           current_player=current_player, is_creator=is_creator)
