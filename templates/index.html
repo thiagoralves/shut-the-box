@@ -7,7 +7,7 @@
     <header class="app-header">
         <h1>Shut the Box</h1>
         <div class="user-info">
-            <span>{{ current_user.username }}</span>
+            <a href="{{ url_for('auth.profile') }}" class="btn btn-small btn-outline">{{ current_user.username }}</a>
             <a href="{{ url_for('auth.logout') }}" class="btn btn-small btn-outline">Logout</a>
         </div>
     </header>
@@ -19,21 +19,19 @@
         </div>
         
         <div class="action-buttons">
-            <button class="btn btn-primary btn-large" disabled>
+            <a href="{{ url_for('games.create_game') }}" class="btn btn-primary btn-large">
                 Create Game
-                <span class="coming-soon">Coming Soon</span>
-            </button>
-            <button class="btn btn-secondary btn-large" disabled>
-                Join Game
-                <span class="coming-soon">Coming Soon</span>
-            </button>
+            </a>
+            <a href="{{ url_for('games.list_games') }}" class="btn btn-secondary btn-large">
+                Browse Games
+            </a>
         </div>
         
-        <div class="games-section">
-            <h3>Available Games</h3>
-            <div class="games-list empty">
-                <p>No games available yet. Game functionality coming in the next update!</p>
-            </div>
+        <div class="quick-links">
+            <a href="{{ url_for('auth.profile') }}" class="quick-link">
+                <span class="quick-link-icon">&#9881;</span>
+                <span>Profile Settings</span>
+            </a>
         </div>
     </main>
 </div>

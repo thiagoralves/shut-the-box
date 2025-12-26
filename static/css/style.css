@@ -357,6 +357,406 @@ body {
     color: var(--text-secondary);
 }
 
+/* Profile Page */
+.profile-section {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.profile-section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.profile-card {
+    background: var(--card-background);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    margin-bottom: 2rem;
+}
+
+.profile-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.profile-avatar {
+    width: 60px;
+    height: 60px;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.profile-details h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.25rem;
+}
+
+.profile-details p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.password-section {
+    background: var(--card-background);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+}
+
+.password-section h3 {
+    font-size: 1.1rem;
+    margin-bottom: 1.25rem;
+}
+
+.password-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.password-form .btn {
+    margin-top: 0.5rem;
+}
+
+.profile-actions {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+/* Quick Links */
+.quick-links {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+}
+
+.quick-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    background: var(--card-background);
+    border-radius: 0.5rem;
+    box-shadow: var(--shadow);
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: all 0.2s;
+}
+
+.quick-link:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+.quick-link-icon {
+    font-size: 1.25rem;
+}
+
+/* Page Header */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.page-header h2 {
+    font-size: 1.5rem;
+}
+
+/* Games List */
+.games-section {
+    margin-bottom: 2rem;
+}
+
+.games-section h3 {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+.game-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--border-color);
+    text-decoration: none;
+    color: inherit;
+    transition: background-color 0.2s;
+}
+
+.game-item:last-child {
+    border-bottom: none;
+}
+
+.game-item:hover {
+    background-color: var(--background-color);
+}
+
+a.game-item {
+    cursor: pointer;
+}
+
+.game-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.game-name {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.game-meta {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.game-status {
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.status-waiting {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.status-playing {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.status-finished {
+    background-color: #e5e7eb;
+    color: #374151;
+}
+
+.game-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Create Game Form */
+.create-game-card {
+    background: var(--card-background);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.create-game-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.form-select {
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    background: white;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.form-hint {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-top: 0.25rem;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.form-actions .btn {
+    flex: 1;
+}
+
+/* Game View */
+.game-header {
+    background: var(--card-background);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    margin-bottom: 1.5rem;
+}
+
+.game-title {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.game-title h2 {
+    font-size: 1.5rem;
+}
+
+.game-status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.game-settings {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.game-content {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.players-section {
+    background: var(--card-background);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+}
+
+.players-section h3 {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+}
+
+.players-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.player-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    background: var(--background-color);
+}
+
+.player-item.current-player {
+    border: 2px solid var(--primary-color);
+    background: rgba(37, 99, 235, 0.05);
+}
+
+.player-avatar {
+    width: 40px;
+    height: 40px;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+.player-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+.player-name {
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.host-badge {
+    font-size: 0.7rem;
+    padding: 0.125rem 0.5rem;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 0.25rem;
+    font-weight: 500;
+}
+
+.player-status {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.waiting-section {
+    background: var(--card-background);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    text-align: center;
+}
+
+.waiting-message {
+    margin-bottom: 1.5rem;
+}
+
+.waiting-message p {
+    margin-bottom: 0.5rem;
+}
+
+.waiting-message .hint {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.game-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.action-hint {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.game-board-placeholder {
+    background: var(--card-background);
+    border-radius: 0.75rem;
+    padding: 3rem;
+    box-shadow: var(--shadow);
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+.back-link {
+    margin-top: 2rem;
+    text-align: center;
+}
+
 @media (max-width: 480px) {
     .auth-card {
         padding: 1.5rem;
@@ -370,5 +770,24 @@ body {
         flex-direction: column;
         gap: 0.75rem;
         text-align: center;
+    }
+    
+    .page-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .game-title {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .game-settings {
+        justify-content: center;
+    }
+    
+    .form-actions {
+        flex-direction: column;
     }
 }
