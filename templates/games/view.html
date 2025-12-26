@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}{{ game.name }} - Shut the Box{% endblock %}
+
+{% block content %}
+<div class="main-container">
+    <header class="app-header">
+        <div class="header-brand">
+            <div class="header-logo">
+                <div class="dice-icon-small">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+            </div>
+            <h1>Shut the Box</h1>
+        </div>
+        <div class="header-menu">
+            <button class="hamburger-btn" onclick="toggleMenu()" aria-label="Menu">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+            <div class="dropdown-menu" id="headerMenu">
+                <a href="{{ url_for('auth.profile') }}" class="dropdown-item">{{ current_user.username }}</a>
+                <a href="{{ url_for('auth.logout') }}" class="dropdown-item">Logout</a>
+            </div>
+        </div>
+    </header>
+    
+    <main class="main-content">
+        <div class="game-header">
+            <div class="game-title">
+                <h2>{{ game.name }}</h2>
+                <span class="game-status-badge status-{{ game.status }}">{{ game.status.capitalize() }}</span>
+            </div>
+            <div class="game-settings">
+                <span>{{ game.max_tiles }} tiles</span>
+                <span>&bull;</span>
+                <span>{{ players|length }}/{{ game.max_players }} players</span>
+            </div>
+        </div>
+        
+        <div class="game-content">
+            <div class="players-section">
+                <h3>Players</h3>
+                <div class="players-list">
+                    {% for player in players %}
+                    <div class="player-item {% if player.user_id == current_user.id %}current-player{% endif %}">
+                        <div class="player-avatar">
+                            {{ player.user.username[0].upper() }}
+                        </div>
+                        <div class="player-info">
+                            <span class="player-name">
+                                {{ player.user.username }}
+                                {% if player.user_id == game.created_by %}
+                                <span class="host-badge">Host</span>
+                                {% endif %}
+                            </span>
+                            {% if game.status == 'playing' %}
+                            <span class="player-status">
+                                {% if player.is_out %}
+                                Out - Score: {{ player.score }}
+                                {% else %}
+                                Playing
+                                {% endif %}
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            {% if game.status == 'waiting' %}
+            <div class="waiting-section">
+                <div class="waiting-message">
+                    <p>Waiting for players to join...</p>
+                    <p class="hint">Share this game with friends so they can join!</p>
+                </div>
+                
+                <div class="game-actions">
+                    {% if is_creator %}
+                    {% if players|length >= 1 %}
+                    <p class="action-hint">Game will start when you implement the game dynamics in the next PR.</p>
+                    {% endif %}
+                    <form action="{{ url_for('games.leave_game', game_id=game.id) }}" method="POST">
+                        <button type="submit" class="btn btn-secondary" onclick="return confirm('Are you sure you want to delete this game?')">Delete Game</button>
+                    </form>
+                    {% elif current_player %}
+                    <form action="{{ url_for('games.leave_game', game_id=game.id) }}" method="POST">
+                        <button type="submit" class="btn btn-secondary">Leave Game</button>
+                    </form>
+                    {% else %}
+                    <form action="{{ url_for('games.join_game', game_id=game.id) }}" method="POST">
+                        <button type="submit" class="btn btn-primary">Join Game</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+            {% else %}
+            <div class="game-board-placeholder">
+                <p>Game board will be implemented in the next update!</p>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="back-link">
+            <a href="{{ url_for('games.list_games') }}" class="btn btn-secondary">Back to Games</a>
+        </div>
+    </main>
+</div>
+{% endblock %}

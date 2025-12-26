@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - Shut the Box{% endblock %}
+
+{% block content %}
+<div class="main-container">
+    <header class="app-header">
+        <div class="header-brand">
+            <div class="header-logo">
+                <div class="dice-icon-small">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+            </div>
+            <h1>Shut the Box</h1>
+        </div>
+        <div class="header-menu">
+            <button class="hamburger-btn" onclick="toggleMenu()" aria-label="Menu">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+            <div class="dropdown-menu" id="headerMenu">
+                <a href="{{ url_for('main.index') }}" class="dropdown-item">Home</a>
+                <a href="{{ url_for('auth.logout') }}" class="dropdown-item">Logout</a>
+            </div>
+        </div>
+    </header>
+    
+    <main class="main-content">
+        <div class="profile-section">
+            <h2>Profile Settings</h2>
+            
+            <div class="profile-card">
+                <div class="profile-info">
+                    <div class="profile-avatar">
+                        {{ current_user.username[0].upper() }}
+                    </div>
+                    <div class="profile-details">
+                        <h3>{{ current_user.username }}</h3>
+                        <p>Member since {{ current_user.created_at.strftime('%B %Y') }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="password-section">
+                <h3>Change Password</h3>
+                <form method="POST" class="password-form">
+                    <div class="form-group">
+                        <label for="current_password">Current Password</label>
+                        <input type="password" id="current_password" name="current_password" required
+                               autocomplete="current-password"
+                               placeholder="Enter current password">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="new_password">New Password</label>
+                        <input type="password" id="new_password" name="new_password" required
+                               autocomplete="new-password"
+                               placeholder="Enter new password" minlength="4">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirm_password">Confirm New Password</label>
+                        <input type="password" id="confirm_password" name="confirm_password" required
+                               autocomplete="new-password"
+                               placeholder="Confirm new password" minlength="4">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Change Password</button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="profile-actions">
+            <a href="{{ url_for('auth.logout') }}" class="btn btn-secondary">Logout</a>
+        </div>
+    </main>
+</div>
+{% endblock %}

@@ -73,6 +73,38 @@ def signup():
     return render_template('signup.html')
 
 
+@auth_bp.route('/profile', methods=['GET', 'POST'])
+@login_required
+def profile():
+    if request.method == 'POST':
+        current_password = request.form.get('current_password', '')
+        new_password = request.form.get('new_password', '')
+        confirm_password = request.form.get('confirm_password', '')
+        
+        if not current_password or not new_password:
+            flash('Please fill in all password fields.', 'error')
+            return render_template('profile.html')
+        
+        if not current_user.check_password(current_password):
+            flash('Current password is incorrect.', 'error')
+            return render_template('profile.html')
+        
+        if len(new_password) < 4:
+            flash('New password must be at least 4 characters long.', 'error')
+            return render_template('profile.html')
+        
+        if new_password != confirm_password:
+            flash('New passwords do not match.', 'error')
+            return render_template('profile.html')
+        
+        current_user.set_password(new_password)
+        db.session.commit()
+        flash('Password changed successfully!', 'success')
+        return redirect(url_for('auth.profile'))
+    
+    return render_template('profile.html')
+
+
 @auth_bp.route('/logout')
 @login_required
 def logout():

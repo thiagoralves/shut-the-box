@@ -41,6 +41,21 @@
                     });
             });
         }
+        
+        function toggleMenu() {
+            var menu = document.getElementById('headerMenu');
+            if (menu) {
+                menu.classList.toggle('show');
+            }
+        }
+        
+        document.addEventListener('click', function(event) {
+            var menu = document.getElementById('headerMenu');
+            var hamburger = document.querySelector('.hamburger-btn');
+            if (menu && hamburger && !hamburger.contains(event.target) && !menu.contains(event.target)) {
+                menu.classList.remove('show');
+            }
+        });
     </script>
     {% block scripts %}{% endblock %}
 </body>
