@@ -2,6 +2,42 @@
 
 {% block title %}{{ game.name }} - Shut the Box{% endblock %}
 
+{% block scripts %}
+<script>
+var gameStatus = '{{ game.status }}';
+var isJoined = {% if current_player %}true{% else %}false{% endif %};
+
+function pollGameStatus() {
+    if (gameStatus !== 'waiting' || !isJoined) return;
+    
+    fetch('{{ url_for("games.game_state", game_id=game.id) }}')
+        .then(function(response) {
+            if (response.status === 403) {
+                window.location.reload();
+                return null;
+            }
+            return response.json();
+        })
+        .then(function(data) {
+            if (!data) return;
+            if (data.status === 'playing') {
+                window.location.href = '{{ url_for("games.play_game", game_id=game.id) }}';
+            } else if (data.status === 'finished') {
+                window.location.href = '{{ url_for("games.game_results", game_id=game.id) }}';
+            }
+        })
+        .catch(function(err) {
+            console.log('Poll error:', err);
+            window.location.reload();
+        });
+}
+
+if (gameStatus === 'waiting' && isJoined) {
+    setInterval(pollGameStatus, 3000);
+}
+</script>
+{% endblock %}
+
 {% block content %}
 <div class="main-container">
     <header class="app-header">

@@ -57,6 +57,7 @@
             </form>
             {% else %}
             <p class="waiting-text">Waiting for host to start next round...</p>
+            <a href="{{ url_for('games.play_game', game_id=game.id) }}" class="btn btn-secondary">Refresh Game</a>
             {% endif %}
         </div>
         {% else %}
