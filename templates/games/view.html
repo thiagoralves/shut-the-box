@@ -2,6 +2,42 @@
 
 {% block title %}{{ game.name }} - Shut the Box{% endblock %}
 
+{% block scripts %}
+<script>
+var gameStatus = '{{ game.status }}';
+var isJoined = {% if current_player %}true{% else %}false{% endif %};
+
+function pollGameStatus() {
+    if (gameStatus !== 'waiting' || !isJoined) return;
+    
+    fetch('{{ url_for("games.game_state", game_id=game.id) }}')
+        .then(function(response) {
+            if (response.status === 403) {
+                window.location.reload();
+                return null;
+            }
+            return response.json();
+        })
+        .then(function(data) {
+            if (!data) return;
+            if (data.status === 'playing') {
+                window.location.href = '{{ url_for("games.play_game", game_id=game.id) }}';
+            } else if (data.status === 'finished') {
+                window.location.href = '{{ url_for("games.game_results", game_id=game.id) }}';
+            }
+        })
+        .catch(function(err) {
+            console.log('Poll error:', err);
+            window.location.reload();
+        });
+}
+
+if (gameStatus === 'waiting' && isJoined) {
+    setInterval(pollGameStatus, 3000);
+}
+</script>
+{% endblock %}
+
 {% block content %}
 <div class="main-container">
     <header class="app-header">
@@ -84,7 +120,9 @@
                 <div class="game-actions">
                     {% if is_creator %}
                     {% if players|length >= 1 %}
-                    <p class="action-hint">Game will start when you implement the game dynamics in the next PR.</p>
+                    <form action="{{ url_for('games.start_game', game_id=game.id) }}" method="POST">
+                        <button type="submit" class="btn btn-primary btn-large">Start Game</button>
+                    </form>
                     {% endif %}
                     <form action="{{ url_for('games.leave_game', game_id=game.id) }}" method="POST">
                         <button type="submit" class="btn btn-secondary" onclick="return confirm('Are you sure you want to delete this game?')">Delete Game</button>

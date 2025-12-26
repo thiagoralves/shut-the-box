@@ -40,9 +40,15 @@ class Game(db.Model):
     current_round = db.Column(db.Integer, default=0)
     dice1 = db.Column(db.Integer, default=0)
     dice2 = db.Column(db.Integer, default=0)
+    round_phase = db.Column(db.String(20), default='waiting')
+    winner_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
     
-    creator = db.relationship('User', backref='created_games')
+    creator = db.relationship('User', backref='created_games', foreign_keys=[created_by])
+    winner = db.relationship('User', backref='won_games', foreign_keys=[winner_id])
     players = db.relationship('GamePlayer', backref='game', lazy='dynamic')
+    
+    def get_dice_total(self):
+        return self.dice1 + self.dice2
     
     def __repr__(self):
         return f'<Game {self.name}>'
@@ -57,9 +63,47 @@ class GamePlayer(db.Model):
     tiles_remaining = db.Column(db.String(50), nullable=True)
     score = db.Column(db.Integer, default=0)
     is_out = db.Column(db.Boolean, default=False)
+    has_submitted = db.Column(db.Boolean, default=False)
+    round_score = db.Column(db.Integer, default=0)
     joined_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     user = db.relationship('User', backref='game_participations')
+    
+    def get_tiles_list(self):
+        if not self.tiles_remaining:
+            return []
+        return [int(t) for t in self.tiles_remaining.split(',') if t]
+    
+    def set_tiles_list(self, tiles):
+        self.tiles_remaining = ','.join(str(t) for t in sorted(tiles))
+    
+    def get_tiles_sum(self):
+        return sum(self.get_tiles_list())
+    
+    def can_make_move(self, dice_total):
+        tiles = self.get_tiles_list()
+        if not tiles:
+            return False
+        return self._can_sum_to(tiles, dice_total)
+    
+    def _can_sum_to(self, tiles, target):
+        if target == 0:
+            return True
+        if target < 0 or not tiles:
+            return False
+        for i, tile in enumerate(tiles):
+            if tile <= target:
+                remaining = tiles[:i] + tiles[i+1:]
+                if self._can_sum_to(remaining, target - tile):
+                    return True
+        return False
+    
+    def is_valid_flip(self, tiles_to_flip, dice_total):
+        current_tiles = self.get_tiles_list()
+        for tile in tiles_to_flip:
+            if tile not in current_tiles:
+                return False
+        return sum(tiles_to_flip) == dice_total
     
     def __repr__(self):
         return f'<GamePlayer {self.user_id} in Game {self.game_id}>'
