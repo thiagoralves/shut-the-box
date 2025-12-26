@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request
+from flask import Blueprint, render_template, redirect, url_for, flash, request, jsonify
 from flask_login import login_required, current_user
 from app import db
 from app.models import Game, GamePlayer
@@ -414,3 +414,25 @@ def game_results(game_id):
     
     return render_template('games/results.html', game=game, players=players,
                           current_player=current_player)
+
+
+@games_bp.route('/games/<int:game_id>/state')
+@login_required
+def game_state(game_id):
+    game = Game.query.get_or_404(game_id)
+    current_player = GamePlayer.query.filter_by(game_id=game_id, user_id=current_user.id).first()
+    
+    if not current_player:
+        return jsonify({'error': 'Not in game'}), 403
+    
+    players = GamePlayer.query.filter_by(game_id=game_id).all()
+    all_submitted = all(p.has_submitted or p.is_out for p in players)
+    
+    return jsonify({
+        'phase': game.round_phase,
+        'status': game.status,
+        'dice1': game.dice1,
+        'dice2': game.dice2,
+        'round': game.current_round,
+        'all_submitted': all_submitted
+    })
