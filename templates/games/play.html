@@ -78,9 +78,11 @@
             {% else %}
             <div class="dice-container">
                 <div class="dice">{{ game.dice1 }}</div>
+                {% if game.dice2 > 0 %}
                 <div class="dice">{{ game.dice2 }}</div>
+                {% endif %}
             </div>
-            <p class="dice-total">Total: {{ game.get_dice_total() }}</p>
+            <p class="dice-total">Total: {{ game.get_dice_total() }}{% if game.dice2 == 0 %} (single die){% endif %}</p>
             {% endif %}
         </div>
         
