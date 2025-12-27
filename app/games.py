@@ -23,7 +23,7 @@ def list_games():
 def create_game():
     if request.method == 'POST':
         name = request.form.get('name', '').strip()
-        max_tiles = request.form.get('max_tiles', '10')
+        max_tiles = request.form.get('max_tiles', '9')
         max_players = request.form.get('max_players', '12')
         
         if not name:
@@ -41,8 +41,8 @@ def create_game():
             flash('Invalid settings.', 'error')
             return render_template('games/create.html')
         
-        if max_tiles not in [10, 12]:
-            flash('Max tiles must be 10 or 12.', 'error')
+        if max_tiles not in [9, 12]:
+            flash('Max tiles must be 9 or 12.', 'error')
             return render_template('games/create.html')
         
         if max_players < 1 or max_players > 12:
@@ -236,8 +236,14 @@ def roll_dice(game_id):
         flash('Only the host can roll the dice.', 'error')
         return redirect(url_for('games.play_game', game_id=game_id))
     
+    active_players = [p for p in game.players if not p.is_out]
+    use_single_die = all(p.get_tiles_sum() <= 6 for p in active_players)
+    
     game.dice1 = random.randint(1, 6)
-    game.dice2 = random.randint(1, 6)
+    if use_single_die:
+        game.dice2 = 0
+    else:
+        game.dice2 = random.randint(1, 6)
     game.round_phase = 'flipping'
     
     for player in game.players:
@@ -245,7 +251,10 @@ def roll_dice(game_id):
             player.has_submitted = False
     
     db.session.commit()
-    flash(f'Rolled {game.dice1} + {game.dice2} = {game.get_dice_total()}!', 'info')
+    if use_single_die:
+        flash(f'Rolled {game.dice1}! (Single die - all players have 6 or less)', 'info')
+    else:
+        flash(f'Rolled {game.dice1} + {game.dice2} = {game.get_dice_total()}!', 'info')
     return redirect(url_for('games.play_game', game_id=game_id))
 
 
@@ -436,7 +445,29 @@ def game_state(game_id):
         'dice1': game.dice1,
         'dice2': game.dice2,
         'round': game.current_round,
-        'all_submitted': all_submitted
+        'all_submitted': all_submitted,
+        'player_count': len(players)
+    })
+
+
+@games_bp.route('/games/<int:game_id>/lobby-state')
+@login_required
+def lobby_state(game_id):
+    """Endpoint for polling game lobby state - includes player list for real-time updates."""
+    game = Game.query.get_or_404(game_id)
+    players = GamePlayer.query.filter_by(game_id=game_id).all()
+    
+    player_list = [{
+        'username': p.user.username,
+        'user_id': p.user_id,
+        'is_host': p.user_id == game.created_by
+    } for p in players]
+    
+    return jsonify({
+        'status': game.status,
+        'player_count': len(players),
+        'max_players': game.max_players,
+        'players': player_list
     })
 
 

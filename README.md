@@ -221,6 +221,21 @@ To serve the application behind nginx with a custom domain (e.g., `shutthebox.yo
            proxy_cache_bypass $http_upgrade;
        }
 
+       # PWA manifest - served directly from static folder
+       location = /manifest.json {
+           alias /home/ubuntu/shut-the-box/static/manifest.json;
+           default_type application/manifest+json;
+       }
+
+       # PWA service worker - served directly from static folder
+       # Important: Don't cache aggressively to allow updates
+       location = /sw.js {
+           alias /home/ubuntu/shut-the-box/static/js/sw.js;
+           default_type application/javascript;
+           add_header Cache-Control "no-cache";
+           add_header Service-Worker-Allowed /;
+       }
+
        location /static {
            alias /home/ubuntu/shut-the-box/static;
            expires 30d;
@@ -228,6 +243,8 @@ To serve the application behind nginx with a custom domain (e.g., `shutthebox.yo
        }
    }
    ```
+   
+   **Important for PWA:** The `location = /manifest.json` and `location = /sw.js` blocks are required for the Progressive Web App to install correctly on mobile devices. These serve the PWA files directly from nginx (more efficient than proxying to Flask).
 
 3. Enable the site:
    ```bash

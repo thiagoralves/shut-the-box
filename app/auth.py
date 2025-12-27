@@ -1,9 +1,20 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, login_required, current_user
+from urllib.parse import urlparse
 from app import db
 from app.models import User
 
 auth_bp = Blueprint('auth', __name__)
+
+
+def is_safe_url(target):
+    """Check if the target URL is safe for redirect (same host, no external URLs)."""
+    if not target:
+        return False
+    ref_url = urlparse(request.host_url)
+    test_url = urlparse(target)
+    # Only allow relative URLs or same-host URLs
+    return test_url.scheme in ('', 'http', 'https') and ref_url.netloc == test_url.netloc
 
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
@@ -24,7 +35,10 @@ def login():
         if user and user.check_password(password):
             login_user(user)
             next_page = request.args.get('next')
-            return redirect(next_page if next_page else url_for('main.index'))
+            # Only redirect to next_page if it's a safe URL (same host, prevents open redirect)
+            if next_page and is_safe_url(next_page):
+                return redirect(next_page)
+            return redirect(url_for('main.index'))
         else:
             flash('Invalid username or password.', 'error')
     
