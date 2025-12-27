@@ -445,7 +445,29 @@ def game_state(game_id):
         'dice1': game.dice1,
         'dice2': game.dice2,
         'round': game.current_round,
-        'all_submitted': all_submitted
+        'all_submitted': all_submitted,
+        'player_count': len(players)
+    })
+
+
+@games_bp.route('/games/<int:game_id>/lobby-state')
+@login_required
+def lobby_state(game_id):
+    """Endpoint for polling game lobby state - includes player list for real-time updates."""
+    game = Game.query.get_or_404(game_id)
+    players = GamePlayer.query.filter_by(game_id=game_id).all()
+    
+    player_list = [{
+        'username': p.user.username,
+        'user_id': p.user_id,
+        'is_host': p.user_id == game.created_by
+    } for p in players]
+    
+    return jsonify({
+        'status': game.status,
+        'player_count': len(players),
+        'max_players': game.max_players,
+        'players': player_list
     })
 
 

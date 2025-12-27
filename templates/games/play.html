@@ -169,6 +169,7 @@
 var selectedTiles = [];
 var diceTotal = {{ game.get_dice_total() if game.round_phase == 'flipping' else 0 }};
 var currentPhase = '{{ game.round_phase }}';
+var currentRound = {{ game.current_round }};
 var currentDice1 = {{ game.dice1 }};
 var currentDice2 = {{ game.dice2 }};
 var shouldPoll = {% if (game.round_phase == 'rolling' and not is_creator) or (game.round_phase == 'flipping' and current_player.has_submitted) or (game.round_phase == 'round_end' and not is_creator) %}true{% else %}false{% endif %};
@@ -214,7 +215,9 @@ function pollGameState() {
     fetch('{{ url_for("games.game_state", game_id=game.id) }}')
         .then(function(response) { return response.json(); })
         .then(function(data) {
-            if (data.phase !== currentPhase || data.dice1 !== currentDice1 || data.dice2 !== currentDice2) {
+            // Reload if phase, round, or dice values changed
+            if (data.phase !== currentPhase || data.round !== currentRound || 
+                data.dice1 !== currentDice1 || data.dice2 !== currentDice2) {
                 window.location.reload();
             }
         })
