@@ -80,6 +80,15 @@ class GamePlayer(db.Model):
     def get_tiles_sum(self):
         return sum(self.get_tiles_list())
     
+    def get_tiles_product(self):
+        tiles = self.get_tiles_list()
+        if not tiles:
+            return 0
+        result = 1
+        for tile in tiles:
+            result *= tile
+        return result
+    
     def can_make_move(self, dice_total):
         tiles = self.get_tiles_list()
         if not tiles:
